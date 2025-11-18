@@ -216,6 +216,9 @@ on:
         options:
           - production
 
+permissions:
+  contents: write
+
 jobs:
   update-gitops-repo:
     name: 📝 Update GitOps Repository
@@ -476,6 +479,9 @@ on:
         type: choice
         options:
           - production
+
+permissions:
+  contents: write
 
 jobs:
   update-gitops-repo:
