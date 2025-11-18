@@ -1,0 +1,62 @@
+name: 🔄 Update Image Tag in GitOps Repo
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'New image tag to deploy'
+        required: true
+        type: string
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - production
+
+jobs:
+  update-gitops-repo:
+    name: 📝 Update GitOps Repository
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🔧 Setup Kustomize
+        run: |
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          sudo mv kustomize /usr/local/bin/
+      
+      - name: 📝 Update image tag
+        run: |
+          cd gitops-repo/applications/fiap-todo-api/overlays/${{ inputs.environment }}
+          
+          # Update image tag in kustomization.yaml
+          kustomize edit set image \
+            fiap-todo-api=YOUR_ECR_URI/fiap-todo-api:${{ inputs.image_tag }}
+          
+          echo "✅ Updated image tag to: ${{ inputs.image_tag }}"
+      
+      - name: 💾 Commit and push changes
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          
+          git add gitops-repo/applications/fiap-todo-api/overlays/${{ inputs.environment }}/kustomization.yaml
+          
+          git commit -m "🚀 Update ${{ inputs.environment }} image to ${{ inputs.image_tag }}"
+          
+          git push origin main
+      
+      - name: 📊 Summary
+        run: |
+          echo "## 🚀 GitOps Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "**New Image Tag:** ${{ inputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ✅ Updated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "ArgoCD will automatically sync this change." >> $GITHUB_STEP_SUMMARY

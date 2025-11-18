@@ -1,0 +1,86 @@
+name: 🔄 ArgoCD GitOps Sync
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'gitops-repo/**'
+  workflow_dispatch:
+
+env:
+  ARGOCD_SERVER: 'localhost:8080'
+  ARGOCD_APP_NAME: 'fiap-todo-api'
+
+jobs:
+  validate-manifests:
+    name: ✅ Validate Kubernetes Manifests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+      
+      - name: 🔧 Setup Kustomize
+        run: |
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          sudo mv kustomize /usr/local/bin/
+      
+      - name: ✅ Validate Kustomize
+        run: |
+          cd gitops-repo/applications/fiap-todo-api/overlays/production
+          kustomize build . > /tmp/manifests.yaml
+          echo "✅ Kustomize build successful"
+      
+      - name: 🔍 Validate YAML
+        run: |
+          pip install yamllint
+          find gitops-repo -name "*.yaml" -o -name "*.yml" | xargs yamllint -d relaxed
+
+  argocd-sync:
+    name: 🚀 Sync ArgoCD Application
+    runs-on: ubuntu-latest
+    needs: validate-manifests
+    if: github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v4
+      
+      - name: 🔧 Install ArgoCD CLI
+        run: |
+          curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+          rm argocd-linux-amd64
+      
+      - name: 🔑 Login to ArgoCD
+        run: |
+          argocd login ${{ env.ARGOCD_SERVER }} \
+            --username admin \
+            --password ${{ secrets.ARGOCD_PASSWORD }} \
+            --insecure
+      
+      - name: 🔄 Sync Application
+        run: |
+          echo "🔄 Syncing ArgoCD application: ${{ env.ARGOCD_APP_NAME }}"
+          
+          argocd app sync ${{ env.ARGOCD_APP_NAME }} \
+            --prune \
+            --timeout 300
+      
+      - name: ⏳ Wait for Sync
+        run: |
+          echo "⏳ Waiting for application to be healthy..."
+          
+          argocd app wait ${{ env.ARGOCD_APP_NAME }} \
+            --health \
+            --timeout 300
+      
+      - name: 📊 Get Application Status
+        run: |
+          echo "📊 Application Status:"
+          argocd app get ${{ env.ARGOCD_APP_NAME }}
+          
+          echo "## 🚀 ArgoCD Sync Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Application:** ${{ env.ARGOCD_APP_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ✅ Synced and Healthy" >> $GITHUB_STEP_SUMMARY
