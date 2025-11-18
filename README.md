@@ -46,11 +46,11 @@ Se você ainda não criou o cluster:
 aws eks describe-cluster --name cicd-lab --region us-east-1 --profile fiapaws
 ```
 
-#### 🐳 Aplicação Docker (Aula 03)
-Para o build manual da imagem (Vídeo 4.1), você precisará da aplicação da **Aula 03**.
-
-- Tenha o repositório da **Aula 03** clonado no mesmo diretório pai
-- Ou use a Opção 2 (imagem de exemplo) descrita no Vídeo 4.1
+#### 🐳 Aplicação Docker
+A aplicação de exemplo (fiap-todo-api) **já está incluída** neste repositório:
+- Código fonte em: `app/`
+- Dockerfile na raiz do repositório
+- Pronta para build e deploy
 
 ### 3. Seguir Vídeos em Ordem
 
@@ -63,9 +63,13 @@ Para o build manual da imagem (Vídeo 4.1), você precisará da aplicação da *
 ```
 aula-04/
 ├── README.md                          # Este arquivo
+├── Dockerfile                         # Dockerfile da aplicação
 ├── VIDEO-4.1-PASSO-A-PASSO.md         # Vídeo 1: GitOps com ArgoCD
 ├── VIDEO-4.2-PASSO-A-PASSO.md         # Vídeo 2: Pipeline GitOps
 ├── VIDEO-4.3-PASSO-A-PASSO.md         # Vídeo 3: FluxCD
+├── app/                               # Código fonte da aplicação
+│   ├── package.json                   # Dependências Node.js
+│   └── src/                           # Código da aplicação
 ├── .github/workflows/                 # GitHub Actions
 │   ├── docker-build.yml               # Build e push de imagens
 │   ├── update-image.yml               # Update de manifests
@@ -78,8 +82,6 @@ aula-04/
     │   └── fiap-todo-api-app.yaml    # ArgoCD Application
     └── clusters/                      # Configurações FluxCD
         └── production/                # Cluster de produção
-
-Nota: O código da aplicação está no repositório da Aula 03
 ```
 
 ## ✅ Checklist de Aprendizado

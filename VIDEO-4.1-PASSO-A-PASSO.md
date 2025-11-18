@@ -258,14 +258,9 @@ echo "ECR URI: $ECR_URI"
 **⚠️ Nota Pedagógica:**
 - Neste vídeo, faremos o build **manualmente** para entender o processo
 - No **Vídeo 4.2**, automatizaremos isso com GitHub Actions
-- Usaremos a aplicação da **Aula 03** (fiap-todo-api)
-
-**Opção 1: Usar aplicação da Aula 03 (Recomendado)**
+- A aplicação está no diretório `app/` deste repositório
 
 ```bash
-# Navegar para o repositório da Aula 03
-cd ../fiap-dclt-aula03  # ou o caminho onde está a Aula 03
-
 # Login no ECR
 aws ecr get-login-password \
   --region us-east-1 \
@@ -273,7 +268,7 @@ aws ecr get-login-password \
   --username AWS \
   --password-stdin ${ECR_URI}
 
-# Build da imagem (Dockerfile está na raiz)
+# Build da imagem (Dockerfile está na raiz do repositório)
 docker build --platform linux/amd64 -t fiap-todo-api:v1.0.0 .
 
 # Tag da imagem para o ECR
@@ -283,34 +278,16 @@ docker tag fiap-todo-api:v1.0.0 ${ECR_URI}/fiap-todo-api:v1.0.0
 docker push ${ECR_URI}/fiap-todo-api:v1.0.0
 
 echo "✅ Imagem publicada: ${ECR_URI}/fiap-todo-api:v1.0.0"
-
-# Voltar para o diretório da Aula 04
-cd ../fiap-dclt-aula04
 ```
 
-**Opção 2: Usar imagem pública de exemplo (Alternativa rápida)**
-
-Se você não tem a Aula 03 disponível, pode usar uma imagem de exemplo:
-
-```bash
-# Fazer pull de uma imagem de exemplo
-docker pull nginx:alpine
-
-# Tag para o ECR
-docker tag nginx:alpine ${ECR_URI}/fiap-todo-api:v1.0.0
-
-# Login no ECR
-aws ecr get-login-password \
-  --region us-east-1 \
-  --profile fiapaws | docker login \
-  --username AWS \
-  --password-stdin ${ECR_URI}
-
-# Push para o ECR
-docker push ${ECR_URI}/fiap-todo-api:v1.0.0
-
-echo "✅ Imagem publicada: ${ECR_URI}/fiap-todo-api:v1.0.0"
-echo "⚠️ Usando nginx:alpine como exemplo"
+**📁 Estrutura da aplicação:**
+```
+fiap-dclt-aula04/
+├── Dockerfile          # Dockerfile da aplicação
+├── app/                # Código fonte da aplicação
+│   ├── package.json
+│   └── src/
+└── gitops-repo/        # Manifests GitOps
 ```
 
 ### Passo 11: Instalar Kustomize
