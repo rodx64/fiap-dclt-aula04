@@ -46,7 +46,7 @@ jobs:
       
       - name: 🏷️ Set image tag
         id: set-tag
-        run: echo "tag=${{ github.sha }}" >> $GITHUB_OUTPUT
+        run: echo "tag=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
       
       - name: 🐳 Build, tag, and push image
         env:
