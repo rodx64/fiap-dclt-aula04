@@ -279,17 +279,26 @@ ls -la flux-system/
 
 ## 📦 Parte 5: Configurar Aplicação no FluxCD
 
-### Passo 7: Criar GitRepository Source
+### Passo 7: Criar Estrutura de Pastas
+
+```bash
+# Criar pasta para configs Flux
+mkdir -p gitops-repo/clusters/production
+
+# Verificar
+ls -la gitops-repo/clusters/production/
+```
+
+### Passo 8: Criar GitRepository Source
 
 **O que é GitRepository?**
 - Define **qual repositório Git** o Flux deve monitorar
 - Define **intervalo** de verificação (ex: 1 minuto)
 - Define **qual pasta** monitorar
 
-```bash
-# Criar pasta para configs Flux
-mkdir -p gitops-repo/clusters/production
+**⚠️ IMPORTANTE:** Substitua `SEU_USUARIO` pelo seu usuário GitHub!
 
+```bash
 # Criar GitRepository
 cat > gitops-repo/clusters/production/fiap-todo-api-source.yaml << 'EOF'
 apiVersion: source.toolkit.fluxcd.io/v1
@@ -306,6 +315,8 @@ spec:
     /*                            # Ignora tudo
     !/gitops-repo/applications/   # Exceto esta pasta
 EOF
+
+echo "✅ GitRepository criado!"
 ```
 
 **Explicação:**
@@ -313,7 +324,19 @@ EOF
 - `url` → Seu repositório GitHub
 - `ignore` → Monitora apenas `gitops-repo/applications/`
 
-### Passo 8: Criar Kustomization
+### Passo 9: Criar Namespace da Aplicação
+
+**⚠️ IMPORTANTE:** Precisamos criar o namespace antes!
+
+```bash
+# Criar namespace
+kubectl create namespace fiap-todo-prod
+
+# Verificar
+kubectl get namespaces | grep fiap-todo
+```
+
+### Passo 10: Criar Kustomization
 
 **O que é Kustomization (Flux)?**
 - Define **o que aplicar** no cluster
@@ -337,7 +360,10 @@ spec:
   prune: true                     # Remove recursos deletados do Git
   wait: true                      # Aguarda recursos ficarem prontos
   timeout: 2m
+  targetNamespace: fiap-todo-prod # ⚠️ Namespace onde aplicar os recursos
 EOF
+
+echo "✅ Kustomization criado!"
 ```
 
 **Explicação:**
@@ -346,7 +372,7 @@ EOF
 - `prune: true` → Se deletar do Git, deleta do cluster
 - `wait: true` → Aguarda pods ficarem ready
 
-### Passo 9: Aplicar Configurações
+### Passo 11: Aplicar Configurações
 
 ```bash
 # Aplicar GitRepository e Kustomization
@@ -360,7 +386,7 @@ flux get kustomizations
 flux logs --follow
 ```
 
-### Passo 10: Fazer Commit
+### Passo 12: Fazer Commit
 
 ```bash
 # Commit das configurações Flux
@@ -398,7 +424,7 @@ FluxCD aplica no cluster
 Deploy automático! 🎉
 ```
 
-### Passo 11: Criar ImageRepository
+### Passo 13: Criar ImageRepository
 
 **O que faz:** Monitora o ECR para novas imagens
 
@@ -417,7 +443,7 @@ spec:
 EOF
 ```
 
-### Passo 12: Criar ImagePolicy
+### Passo 14: Criar ImagePolicy
 
 **O que faz:** Define qual tag usar (ex: sempre a mais recente)
 
@@ -440,7 +466,7 @@ spec:
 EOF
 ```
 
-### Passo 13: Criar ImageUpdateAutomation
+### Passo 15: Criar ImageUpdateAutomation
 
 **O que faz:** Atualiza o Git automaticamente
 
@@ -473,7 +499,7 @@ spec:
 EOF
 ```
 
-### Passo 14: Adicionar Marker no Kustomization
+### Passo 16: Adicionar Marker no Kustomization
 
 **Editar:** `gitops-repo/applications/fiap-todo-api/overlays/production/kustomization.yaml`
 
@@ -497,7 +523,7 @@ images:
 - FluxCD vai substituir `v1.0.0` pela tag mais recente do ECR
 - Commit automático no Git
 
-### Passo 15: Criar Secret para ECR
+### Passo 17: Criar Secret para ECR
 
 ```bash
 # Criar secret com credenciais AWS
@@ -508,7 +534,7 @@ kubectl create secret generic ecr-credentials \
   -n flux-system
 ```
 
-### Passo 16: Aplicar Image Automation
+### Passo 18: Aplicar Image Automation
 
 ```bash
 # Aplicar todas as configs
@@ -527,7 +553,7 @@ flux logs --follow
 
 ## 🎯 Parte 7: Testar Fluxo Completo
 
-### Passo 17: Fazer Deploy de Nova Versão
+### Passo 19: Fazer Deploy de Nova Versão
 
 ```bash
 # 1. Fazer mudança no código
@@ -552,7 +578,7 @@ git push origin main
 flux logs --follow
 ```
 
-### Passo 18: Verificar Deployment
+### Passo 20: Verificar Deployment
 
 ```bash
 # Ver pods sendo atualizados
