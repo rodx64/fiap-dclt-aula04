@@ -548,7 +548,7 @@ Adicione os seguintes secrets:
 ### Passo 5: Ver Workflow Docker Build
 
 ```bash
-cd ~/fiap-cicd-handson/aula-04
+cd fiap-dclt-aula04
 
 # Ver workflow
 cat .github/workflows/docker-build.yml
@@ -677,7 +677,7 @@ jobs:
 ### Passo 5: Ver Mudança no Git
 
 ```bash
-cd ~/fiap-cicd-handson/aula-04
+cd fiap-dclt-aula04
 
 # Pull mudanças
 git pull origin main
@@ -811,7 +811,7 @@ jobs:
 **Cenário: Atualizar aplicação**
 
 ```bash
-cd ~/fiap-cicd-handson/aula-04
+cd fiap-dclt-aula04
 
 # 1. Fazer mudança no código
 echo "// New feature" >> app/src/app.js
@@ -856,7 +856,7 @@ curl http://localhost:8080/todos
 ### Passo 10: Rollback via Git
 
 ```bash
-cd ~/fiap-cicd-handson/aula-04
+cd fiap-dclt-aula04
 
 # Ver histórico
 git log --oneline gitops-repo/

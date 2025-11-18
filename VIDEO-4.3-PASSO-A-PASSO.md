@@ -104,7 +104,7 @@ export GITHUB_USER=<seu_usuario>
 # Bootstrap Flux
 flux bootstrap github \
   --owner=$GITHUB_USER \
-  --repository=fiap-cicd-handson \
+  --repository=fiap-dclt-aula04 \
   --branch=main \
   --path=aula-04/flux-system \
   --personal
@@ -136,7 +136,7 @@ flux get kustomizations
 ### Passo 6: Ver Estrutura Flux
 
 ```bash
-cd ~/fiap-cicd-handson/aula-04
+cd fiap-dclt-aula04
 
 # Ver estrutura
 tree gitops-repo/clusters/
@@ -316,7 +316,7 @@ spec:
 ### Passo 14: Fazer Mudança no Git
 
 ```bash
-cd ~/fiap-cicd-handson/aula-04
+cd fiap-dclt-aula04
 
 # Editar deployment
 cat >> gitops-repo/applications/fiap-todo-api/overlays/production/deployment-patch.yaml << 'EOF'

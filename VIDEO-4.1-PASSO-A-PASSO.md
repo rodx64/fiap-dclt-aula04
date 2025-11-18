@@ -467,7 +467,7 @@ kubectl logs -l app=fiap-todo-api -n fiap-todo-prod --tail=50
 ### Passo 18: Fazer Mudança no Git
 
 ```bash
-cd ~/fiap-cicd-handson/aula-04
+cd fiap-dclt-aula04
 
 # Editar deployment (aumentar replicas)
 cat > gitops-repo/applications/fiap-todo-api/overlays/production/deployment-patch.yaml << 'EOF'
