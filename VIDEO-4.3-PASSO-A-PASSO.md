@@ -659,30 +659,6 @@ git push origin main
 
 ---
 
-## 🎓 Conclusão da Aula 4
-
-### O Que Aprendemos
-
-✅ **Vídeo 4.1**: ArgoCD - Instalação e conceitos
-✅ **Vídeo 4.2**: GitHub Actions + GitOps Pipeline
-✅ **Vídeo 4.3**: FluxCD + Image Automation
-
-### Conceitos Principais
-
-1. **GitOps**: Git como fonte única da verdade
-2. **Declarativo**: Descrever estado desejado, não passos
-3. **Automação**: CI/CD totalmente automatizado
-4. **Observabilidade**: Rastreamento de mudanças via Git
-
-### Próximos Passos
-
-- Escolher: ArgoCD ou FluxCD para seu projeto
-- Implementar: Pipeline completo em produção
-- Explorar: Helm charts com GitOps
-- Avançar: Multi-cluster e multi-environment
-
----
-
 **FIM DO VÍDEO 4.3** ✅
 
 **FIM DA AULA 4 - GitOps** 🎓
