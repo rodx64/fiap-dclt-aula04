@@ -11,7 +11,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@github.com/josenetoo/fiap-dclt-aula04
+  url: ssh://git@github.com/rodx64/fiap-dclt-aula04
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

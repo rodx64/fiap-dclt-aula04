@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m                    # Verifica a cada 1 minuto
-  url: https://github.com/josenetoo/fiap-dclt-aula04
+  url: https://github.com/rodx64/fiap-dclt-aula04
   ref:
     branch: main
   ignore: |
